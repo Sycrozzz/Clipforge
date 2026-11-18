@@ -1,0 +1,30 @@
+name: Build ClipForge desktop app
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - run: node desktop/build.mjs
+        env:
+          CLIPFORGE_DESKTOP_BUILD: "1"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: clipforge-${{ matrix.os }}
+          path: |
+            dist-desktop/*.exe
+            dist-desktop/*.dmg
+            dist-desktop/*.AppImage
