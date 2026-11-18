@@ -18,6 +18,8 @@ jobs:
         with:
           node-version: 22
       - run: npm install
+      - name: Prepare font assets
+        run: node desktop/prepare-assets.mjs
       - run: node desktop/build.mjs
         env:
           CLIPFORGE_DESKTOP_BUILD: "1"
